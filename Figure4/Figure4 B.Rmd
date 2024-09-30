@@ -1,0 +1,60 @@
+---
+title: "Figure4 B"
+output: html_document
+date: "2024-09-29"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+dt = data.frame(time = c(0,4,8,12,16,20,24,28,32,36,40,44,48,52),
+                  OD600 = c(0.0479,0.0472,0.0504,0.0668,0.1084,0.2123,0.3812,0.6231,0.791,0.9484,
+                            1.1135,1.1099,1.189,1.1402))
+  dt$lg <- log10(dt$OD600)
+  colnames(dt) <- c("time", "OD600","lg")
+  
+  par(mfrow=c(1,2))
+  plot(type = "b", dt$time,dt$OD600, xlab = "Time(h)", ylab = "OD600")
+  plot(type = "b", dt$time,dt$lg, pch=19, xlab = "Time(h)", ylab = "lg(OD600)" )
+  par(mfrow=c(1,1))
+  
+  
+  plot(type = "l", dt$time,dt$lg, pch=19, xlab = "Time(h)", ylab = "lg(OD600)" )
+  abline(h = log10(c(0.1, 0.2, 0.4,0.8,1.0,1.2)), col = "pink")
+  abline(v = seq(0,50,by=10), col = "grey")
+  points(dt$time,dt$lg, pch=19)
+  axis(4, log10(c(0.1, 0.2, 0.4, 0.8, 1.0, 1.2)), as.character(c(0.1, 0.2, 0.4, 0.8, 1.0, 1.2)), 
+       col.ticks = "pink")
+  t1 <- locator()
+  t2 <- locator() 
+  points(t1, pch=4, col = "red", cex = 1.5, lwd = 0.4)
+  points(t2, pch=4, col = "red", cex = 1.5, lwd = 0.4)
+  
+  segments(t1$x, t1$y, t1$x, log10(0.1),"red")
+  arrows(t1$x,log10(0.1),t2$x,log10(0.1), col = "red", length = 0.1,code =3)
+  text(t1$x+(t2$x-t1$x)/2,log10(0.09), labels = paste0(round(t2$x-t1$x,2),"h"))
+  segments(t2$x,log10(0.1),t2$x,t2$y,"red")
+  
+  dt.lm <- dt[5:7,]
+  abline(lm(data = dt.lm, lg~time), col="blue", lty = "longdash")
+  g <- round(log10(2)/coef(lm(data = dt.lm, lg~time))[2],2)
+  mtext(text = paste0("calculated generation time is ",bquote(.(g)), "h."), adj=0)
+                                         
+
+## Including Plots
+
+# You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
